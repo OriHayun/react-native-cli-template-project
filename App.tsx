@@ -9,30 +9,44 @@
  */
 
 import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
-import EnTranselation from "./src/i18n/en.json";
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-import i18n from "i18next";
-import { useTranslation, initReactI18next } from "react-i18next";
+import {Text, StyleSheet, useColorScheme, View} from 'react-native';
+import EnTranselation from './src/i18n/en.json';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import i18n from 'i18next';
+import {initReactI18next} from 'react-i18next';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(initReactI18next)
   .init({
-    // the translations
-    // (tip move them in a JSON file and import them,
-    // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
+    compatibilityJSON: 'v3',
     resources: {
       en: {
-        translation: EnTranselation
-      }
+        translation: EnTranselation,
+      },
     },
-    lng: "en", // if you're using a language detector, do not define the lng option
-    fallbackLng: "en",
+    lng: 'en',
+    fallbackLng: 'en',
 
     interpolation: {
-      escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-    }
+      escapeValue: false,
+    },
   });
+
+const HomeScreen:React.FC = (props)=> {
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text>Home Screen</Text>
+    </View>
+  );
+}
+
+type RootStackParamList = {
+  Home: undefined;
+};
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -42,19 +56,11 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}></View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <RootStack.Navigator initialRouteName="Home">
+        <RootStack.Screen name="Home" component={HomeScreen} />
+      </RootStack.Navigator>
+    </NavigationContainer>
   );
 };
 
